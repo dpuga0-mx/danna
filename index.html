@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Momentos ❤️</title>
+    <meta name="description" content="Un collage interactivo de nuestros mejores momentos juntos">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b9d;
+            --primary-dark: #c44569;
+            --accent: #f8a5c2;
+            --gold: #f7d794;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255, 255, 255, 0.06);
+            --text-light: #f0e6ef;
+            --text-muted: #a89db8;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ========== BACKGROUND GRADIENT ========== */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(248, 165, 194, 0.1) 0%, transparent 50%),
+                var(--bg-dark);
+        }
+
+        /* ========== FLOATING HEARTS PARTICLES ========== */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -20px;
+            opacity: 0;
+            animation: floatUp linear infinite;
+            font-size: 14px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--gold), var(--primary));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(255, 107, 157, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            animation: bounce 2s ease infinite;
+            cursor: pointer;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            border-right: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            transform: rotate(45deg);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-12px); }
+            60% { transform: translateY(-6px); }
+        }
+
+        /* ========== SECTION TITLES ========== */
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 1rem;
+            margin-bottom: 3rem;
+            letter-spacing: 1px;
+        }
+
+        /* ========== 3D CAROUSEL SECTION ========== */
+        .carousel-section {
+            padding: 4rem 2rem 6rem;
+            position: relative;
+        }
+
+        .carousel-wrapper {
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 420px;
+            margin: 0 auto;
+            max-width: 1000px;
+            position: relative;
+        }
+
+        .carousel {
+            position: relative;
+            width: 260px;
+            height: 340px;
+            transform-style: preserve-3d;
+            animation: autoRotate 25s linear infinite;
+            cursor: grab;
+        }
+
+        .carousel:active {
+            cursor: grabbing;
+            animation-play-state: paused;
+        }
+
+        .carousel:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes autoRotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .carousel-card {
+            position: absolute;
+            width: 240px;
+            height: 320px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+            left: 50%;
+            top: 50%;
+            margin-left: -120px;
+            margin-top: -160px;
+        }
+
+        .carousel-card:hover {
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.3), 0 0 30px rgba(248, 165, 194, 0.2);
+            transform: scale(1.05) !important;
+        }
+
+        .carousel-card .card-image {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-card .card-placeholder {
+            width: 100%;
+            height: 230px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, rgba(255,107,157,0.3), rgba(139,92,246,0.3));
+        }
+
+        .carousel-card .card-info {
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .carousel-card .card-info h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .carousel-card .card-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .carousel-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        /* ========== TIMELINE / POLAROID GRID ========== */
+        .timeline-section {
+            padding: 4rem 2rem 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--primary), var(--accent), transparent);
+        }
+
+        .polaroid-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            padding: 0 1rem;
+        }
+
+        .polaroid {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 12px 12px 40px;
+            transform: rotate(var(--rotation, 0deg));
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #d4a574 40%, #b8956a 60%);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.08) translateY(-10px);
+            box-shadow: 0 20px 50px rgba(255, 107, 157, 0.25), 0 0 20px rgba(248, 165, 194, 0.15);
+            border-color: rgba(255, 107, 157, 0.3);
+            z-index: 10;
+        }
+
+        .polaroid .photo {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+        }
+
+        .polaroid .photo-placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            font-size: 2.5rem;
+        }
+
+        .polaroid .caption {
+            text-align: center;
+            margin-top: 12px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        .polaroid .date {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ========== FULLSCREEN LIGHTBOX ========== */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 20, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .lightbox-content {
+            position: relative;
+            z-index: 1;
+            max-width: 85vw;
+            max-height: 85vh;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(255, 107, 157, 0.2);
+            transform: scale(0.8) translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .lightbox-content img {
+            max-width: 85vw;
+            max-height: 75vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .lightbox-content .placeholder-large {
+            width: 60vw;
+            max-width: 600px;
+            height: 50vh;
+            max-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .lightbox-caption {
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .lightbox-caption h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .lightbox-caption p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            color: var(--text-light);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-nav:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .lightbox-nav.prev { left: 1rem; }
+        .lightbox-nav.next { right: 1rem; }
+
+        /* ========== LOVE COUNTER ========== */
+        .counter-section {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .counter-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .counter-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,107,157,0.1), transparent, rgba(248,165,194,0.08), transparent);
+            animation: rotateGlow 8s linear infinite;
+        }
+
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .counter-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .counter-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .counter-values {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .counter-item {
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .counter-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .counter-unit {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .counter-date-input {
+            margin-top: 1.5rem;
+        }
+
+        .counter-date-input label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .counter-date-input input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: var(--text-light);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .counter-date-input input:focus {
+            border-color: var(--primary);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer .heart {
+            color: var(--primary);
+            display: inline-block;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+        }
+
+        /* ========== MUSIC TOGGLE ========== */
+        .music-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            color: var(--text-light);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .music-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 18px;
+        }
+
+        .music-bars .bar {
+            width: 3px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: height 0.3s ease;
+        }
+
+        .music-bars.playing .bar {
+            animation: musicBar 0.8s ease infinite alternate;
+        }
+
+        .music-bars.playing .bar:nth-child(1) { animation-delay: 0s; }
+        .music-bars.playing .bar:nth-child(2) { animation-delay: 0.15s; }
+        .music-bars.playing .bar:nth-child(3) { animation-delay: 0.3s; }
+        .music-bars.playing .bar:nth-child(4) { animation-delay: 0.45s; }
+
+        @keyframes musicBar {
+            0% { height: 4px; }
+            100% { height: 18px; }
+        }
+
+        .music-bars:not(.playing) .bar {
+            height: 4px !important;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .carousel-wrapper {
+                height: 360px;
+            }
+            .carousel-card {
+                width: 180px;
+                height: 250px;
+                margin-left: -90px;
+                margin-top: -125px;
+            }
+            .carousel-card .card-placeholder,
+            .carousel-card .card-image {
+                height: 170px;
+            }
+            .polaroid-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.5rem;
+            }
+            .counter-values {
+                gap: 0.5rem;
+            }
+            .counter-number {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .polaroid-grid {
+                grid-template-columns: 1fr;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+        }
+
+        /* ========== ENTRANCE ANIMATIONS ========== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in:nth-child(2) { transition-delay: 0.1s; }
+        .fade-in:nth-child(3) { transition-delay: 0.2s; }
+        .fade-in:nth-child(4) { transition-delay: 0.3s; }
+        .fade-in:nth-child(5) { transition-delay: 0.4s; }
+        .fade-in:nth-child(6) { transition-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+    <div class="particles-container" id="particles"></div>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <h1 class="hero-title">Nuestros Momentos</h1>
+        <p class="hero-subtitle">Cada segundo contigo es un recuerdo perfecto</p>
+        <div class="scroll-indicator" onclick="document.querySelector('.carousel-section').scrollIntoView({behavior:'smooth'})">
+            <span>Descubre</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- ===== 3D CAROUSEL ===== -->
+    <section class="carousel-section">
+        <h2 class="section-title fade-in">Nuestro Universo</h2>
+        <p class="section-subtitle fade-in">Haz clic en una foto para verla en grande</p>
+
+        <div class="carousel-wrapper">
+            <div class="carousel" id="carousel">
+                <!-- Cards are generated via JS -->
+            </div>
+        </div>
+
+        <div class="carousel-controls">
+            <button class="carousel-btn" id="prevBtn" aria-label="Anterior">◀</button>
+            <button class="carousel-btn" id="nextBtn" aria-label="Siguiente">▶</button>
+        </div>
+    </section>
+
+    <!-- ===== POLAROID GRID ===== -->
+    <section class="timeline-section">
+        <h2 class="section-title fade-in">Nuestra Historia</h2>
+        <p class="section-subtitle fade-in">Momentos que nos definen</p>
+
+        <div class="polaroid-grid" id="polaroidGrid">
+            <!-- Polaroids generated via JS -->
+        </div>
+    </section>
+
+    <!-- ===== LOVE COUNTER ===== -->
+    <section class="counter-section">
+        <div class="counter-card fade-in">
+            <div class="counter-label">Tiempo amándote ❤️</div>
+            <div class="counter-values">
+                <div class="counter-item">
+                    <div class="counter-number" id="counterDays">0</div>
+                    <div class="counter-unit">Días</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterHours">0</div>
+                    <div class="counter-unit">Horas</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterMins">0</div>
+                    <div class="counter-unit">Min</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterSecs">0</div>
+                    <div class="counter-unit">Seg</div>
+                </div>
+            </div>
+            <div class="counter-date-input">
+                <label>📅 Fecha de inicio de nuestra historia</label>
+                <input type="date" id="startDate" value="2024-01-01">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p>Hecho con <span class="heart">❤️</span> para ti</p>
+    </footer>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-overlay" id="lightboxOverlay"></div>
+        <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+        <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Anterior">◀</button>
+        <button class="lightbox-nav next" id="lightboxNext" aria-label="Siguiente">▶</button>
+        <div class="lightbox-content">
+            <div id="lightboxImage"></div>
+            <div class="lightbox-caption">
+                <h3 id="lightboxTitle"></h3>
+                <p id="lightboxDate"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MUSIC BUTTON ===== -->
+    <button class="music-toggle" id="musicToggle" aria-label="Toggle music" title="Música">
+        <div class="music-bars" id="musicBars">
+            <div class="bar" style="height:6px"></div>
+            <div class="bar" style="height:12px"></div>
+            <div class="bar" style="height:8px"></div>
+            <div class="bar" style="height:14px"></div>
+        </div>
+    </button>
+
+    <script>
+        // ===== PHOTO DATA =====
+        // Replace placeholders with real image paths when ready
+        const photos = [
+            { id: 1, emoji: '💑', caption: 'Nuestro primer momento', date: 'Momento especial', gradient: 'linear-gradient(135deg, #ff6b9d, #c44569)' },
+            { id: 2, emoji: '🌅', caption: 'Atardecer juntos', date: 'Un día perfecto', gradient: 'linear-gradient(135deg, #f7d794, #f19066)' },
+            { id: 3, emoji: '🎂', caption: 'Celebrando juntos', date: 'Felicidad pura', gradient: 'linear-gradient(135deg, #a29bfe, #6c5ce7)' },
+            { id: 4, emoji: '🏖️', caption: 'Aventura en la playa', date: 'Recuerdos del mar', gradient: 'linear-gradient(135deg, #55efc4, #00b894)' },
+            { id: 5, emoji: '🎄', caption: 'Nuestra Navidad', date: 'Magia de diciembre', gradient: 'linear-gradient(135deg, #fd79a8, #e84393)' },
+            { id: 6, emoji: '🍕', caption: 'Cita de pizza', date: 'Sabor a nosotros', gradient: 'linear-gradient(135deg, #fdcb6e, #e17055)' },
+            { id: 7, emoji: '🌃', caption: 'Noche de ciudad', date: 'Luces y risas', gradient: 'linear-gradient(135deg, #74b9ff, #0984e3)' },
+            { id: 8, emoji: '💐', caption: 'Flores para ti', date: 'Porque te lo mereces', gradient: 'linear-gradient(135deg, #fab1a0, #e17055)' },
+        ];
+
+        // ===== PARTICLES =====
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const hearts = ['💕', '✨', '💗', '🌸', '💖', '⭐', '🤍', '💫'];
+            for (let i = 0; i < 25; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (12 + Math.random() * 18) + 's';
+                p.style.animationDelay = Math.random() * 15 + 's';
+                p.style.fontSize = (10 + Math.random() * 14) + 'px';
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // ===== 3D CAROUSEL =====
+        const carousel = document.getElementById('carousel');
+        const numCards = photos.length;
+        const angleStep = 360 / numCards;
+        const radius = Math.max(320, numCards * 50);
+        let currentAngle = 0;
+
+        photos.forEach((photo, i) => {
+            const card = document.createElement('div');
+            card.className = 'carousel-card';
+            const angle = angleStep * i;
+            card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+
+            card.innerHTML = `
+                <div class="card-placeholder" style="background:${photo.gradient}">${photo.emoji}</div>
+                <div class="card-info">
+                    <h3>${photo.caption}</h3>
+                    <p>${photo.date}</p>
+                </div>
+            `;
+
+            card.addEventListener('click', () => openLightbox(i));
+            carousel.appendChild(card);
+        });
+
+        // Carousel controls
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            carousel.style.animation = 'none';
+            currentAngle += angleStep;
+            carousel.style.transform = `rotateY(${currentAngle}deg)`;
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            carousel.style.animation = 'none';
+            currentAngle -= angleStep;
+            carousel.style.transform = `rotateY(${currentAngle}deg)`;
+        });
+
+        // ===== POLAROID GRID =====
+        const polaroidGrid = document.getElementById('polaroidGrid');
+        const rotations = [-3, 2, -1.5, 2.5, -2, 1.5, -2.5, 1];
+
+        photos.forEach((photo, i) => {
+            const polaroid = document.createElement('div');
+            polaroid.className = 'polaroid fade-in';
+            polaroid.style.setProperty('--rotation', rotations[i % rotations.length] + 'deg');
+
+            polaroid.innerHTML = `
+                <div class="photo-placeholder" style="background:${photo.gradient}">${photo.emoji}</div>
+                <div class="caption">${photo.caption}</div>
+                <div class="date">${photo.date}</div>
+            `;
+
+            polaroid.addEventListener('click', () => openLightbox(i));
+            polaroidGrid.appendChild(polaroid);
+        });
+
+        // ===== LIGHTBOX =====
+        let currentLightboxIndex = 0;
+
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            updateLightboxContent();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightboxContent() {
+            const photo = photos[currentLightboxIndex];
+            document.getElementById('lightboxImage').innerHTML = `
+                <div class="placeholder-large" style="background:${photo.gradient}">${photo.emoji}</div>
+            `;
+            document.getElementById('lightboxTitle').textContent = photo.caption;
+            document.getElementById('lightboxDate').textContent = photo.date;
+        }
+
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxOverlay').addEventListener('click', closeLightbox);
+
+        document.getElementById('lightboxPrev').addEventListener('click', () => {
+            currentLightboxIndex = (currentLightboxIndex - 1 + photos.length) % photos.length;
+            updateLightboxContent();
+        });
+
+        document.getElementById('lightboxNext').addEventListener('click', () => {
+            currentLightboxIndex = (currentLightboxIndex + 1) % photos.length;
+            updateLightboxContent();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') {
+                currentLightboxIndex = (currentLightboxIndex - 1 + photos.length) % photos.length;
+                updateLightboxContent();
+            }
+            if (e.key === 'ArrowRight') {
+                currentLightboxIndex = (currentLightboxIndex + 1) % photos.length;
+                updateLightboxContent();
+            }
+        });
+
+        // ===== LOVE COUNTER =====
+        const startDateInput = document.getElementById('startDate');
+
+        function updateCounter() {
+            const start = new Date(startDateInput.value + 'T00:00:00');
+            const now = new Date();
+            const diff = now - start;
+
+            if (diff < 0) return;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('counterDays').textContent = days;
+            document.getElementById('counterHours').textContent = hours;
+            document.getElementById('counterMins').textContent = mins;
+            document.getElementById('counterSecs').textContent = secs;
+        }
+
+        startDateInput.addEventListener('change', updateCounter);
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ===== MUSIC TOGGLE (placeholder) =====
+        const musicToggle = document.getElementById('musicToggle');
+        const musicBars = document.getElementById('musicBars');
+        let musicPlaying = false;
+
+        musicToggle.addEventListener('click', () => {
+            musicPlaying = !musicPlaying;
+            musicBars.classList.toggle('playing', musicPlaying);
+            // To add real music, create an Audio element:
+            // const audio = new Audio('your-song.mp3');
+            // musicPlaying ? audio.play() : audio.pause();
+        });
+    </script>
+</body>
+</html>
