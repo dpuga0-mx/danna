@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dos años</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#FBF3F1;
+  --paper-2:#F6E9E6;
+  --sheet:#FFFCFB;
+  --grid:#F2DDD8;
+  --grid-bold:#EACBC4;
+  --ink:#2B2126;
+  --ink-2:#6E5D64;
+  --pulse:#C0455F;
+  --pulse-soft:#E9A6B4;
+
+  --display:"Instrument Serif",Georgia,serif;
+  --body:"Inter Tight",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  --pad:clamp(22px,6vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  line-height:1.65;
+  overflow-x:hidden;
+  overscroll-behavior-y:none;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body.locked{overflow:hidden;height:100vh;height:100svh}
+
+/* iPhone: sin flash azul al tocar, sin menú de copiar, sin zoom por doble tap */
+button{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:manipulation}
+
+/* --- Papel de electrocardiograma --- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 8px),
+    repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 8px),
+    repeating-linear-gradient(0deg,var(--grid-bold) 0 1px,transparent 1px 40px),
+    repeating-linear-gradient(90deg,var(--grid-bold) 0 1px,transparent 1px 40px);
+  -webkit-mask-image:radial-gradient(125% 85% at 50% 42%,#000 45%,transparent 100%);
+  mask-image:radial-gradient(125% 85% at 50% 42%,#000 45%,transparent 100%);
+  opacity:.85;
+  transform:translateZ(0);
+  will-change:transform;
+}
+
+.mono{
+  font-family:var(--mono);font-size:.65rem;font-weight:400;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+}
+:focus-visible{outline:2px solid var(--pulse);outline-offset:5px;border-radius:3px}
+
+/* ============ IGNICIÓN ============ */
+#ignition{
+  position:fixed;inset:0;z-index:100;width:100%;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background:var(--paper);border:0;cursor:pointer;font-family:inherit;
+  display:grid;place-items:center;align-content:center;gap:38px;
+  transition:opacity 1s ease .5s,visibility 1s .5s;
+}
+#ignition::before{
+  content:"";position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 8px),
+    repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 8px);
+  -webkit-mask-image:radial-gradient(110% 70% at 50% 50%,#000 40%,transparent 100%);
+  mask-image:radial-gradient(110% 70% at 50% 50%,#000 40%,transparent 100%);
+}
+#ignition.off{opacity:0;visibility:hidden}
+#ig-svg{position:relative;width:min(86vw,460px);height:auto;overflow:visible}
+#ig-base{fill:none;stroke:var(--grid-bold);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+#ig-live{
+  fill:none;stroke:var(--pulse-soft);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  animation:sweep 2.9s cubic-bezier(.5,0,.5,1) infinite;
+}
+@keyframes sweep{
+  0%{stroke-dashoffset:var(--len)}
+  55%,100%{stroke-dashoffset:0}
+}
+#ignition.off #ig-live{
+  animation:none;stroke:var(--pulse);stroke-width:2.6;
+  stroke-dasharray:none!important;stroke-dashoffset:0!important;
+}
+.ignition-label{
+  position:relative;
+  font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--ink-2);
+  transition:opacity .35s ease;
+}
+#ignition.off .ignition-label{opacity:0}
+
+/* ============ DOCUMENTO ============ */
+#doc{
+  position:relative;z-index:1;
+  opacity:0;transition:opacity 1.2s ease .95s;
+  max-width:720px;margin:0 auto;
+  padding-left:max(var(--pad),env(safe-area-inset-left));
+  padding-right:max(var(--pad),env(safe-area-inset-right));
+}
+#doc.on{opacity:1}
+
+/* ---- Portada ---- */
+.cover{
+  min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:calc(14vh + env(safe-area-inset-top)) 0 12vh;
+}
+.cover h1{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(3.6rem,17vw,7.2rem);
+  line-height:.94;letter-spacing:-.035em;
+  margin:30px 0 0;
+}
+.cover h1 em{display:block;font-style:italic;color:var(--pulse)}
+.cover .sub{
+  margin-top:34px;max-width:32ch;
+  color:var(--ink-2);font-size:1.02rem;
+}
+.scroll-hint{margin-top:auto;display:grid;justify-items:center;gap:14px}
+.scroll-hint i{width:1px;height:46px;background:linear-gradient(var(--pulse-soft),transparent)}
+
+/* ---- Pulso / línea de tiempo ---- */
+.timeline{position:relative;padding:6vh 0 8vh 46px}
+.ecg{position:absolute;left:0;top:0;width:40px;overflow:visible;pointer-events:none}
+.ecg .base{fill:none;stroke:var(--grid-bold);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.ecg .live{fill:none;stroke:var(--pulse);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.ecg .head{fill:var(--pulse);opacity:0}
+.ecg.armed .head{opacity:1;animation:beat 1.15s ease-in-out infinite}
+@keyframes beat{0%,58%,100%{r:3.4px}10%{r:5.6px}20%{r:3.4px}30%{r:4.6px}}
+
+.node{
+  position:relative;padding-bottom:14vh;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.22,.9,.3,1);
+}
+.node.seen{opacity:1;transform:none}
+.node::before{
+  content:"";position:absolute;left:-31px;top:9px;
+  width:11px;height:11px;border-radius:50%;
+  background:var(--paper);border:1.4px solid var(--grid-bold);
+  transition:background .4s ease,border-color .4s ease;
+}
+.node.lit::before{
+  background:var(--pulse);border-color:var(--pulse);
+  animation:thump 1.15s ease-in-out infinite;
+}
+@keyframes thump{0%,58%,100%{transform:scale(1)}10%{transform:scale(1.4)}20%{transform:scale(1)}30%{transform:scale(1.2)}}
+
+.node .stamp{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.node h2{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(1.9rem,6.6vw,2.6rem);
+  line-height:1.1;letter-spacing:-.025em;margin-bottom:22px;
+}
+.node p{color:var(--ink-2);font-size:1.02rem;max-width:42ch}
+
+/* ---- Fotos ---- */
+.shot{margin:0 0 22px}
+.shot .frame{
+  border-radius:20px;overflow:hidden;
+  background:var(--paper-2);
+  box-shadow:0 22px 50px -24px rgba(80,45,55,.35),0 3px 10px -4px rgba(80,45,55,.12);
+}
+.shot img{display:block;width:100%;height:auto}
+.shot.empty .frame{
+  aspect-ratio:4/3;display:grid;place-items:center;
+  background:linear-gradient(168deg,var(--paper-2),#F0DCD8);
+}
+.shot.empty img{display:none}
+.shot .cap{display:block;margin-top:12px}
+
+/* ---- Frase suelta ---- */
+.quote{margin:30px 0 0;padding-left:22px;border-left:1.5px solid var(--pulse)}
+.quote p{
+  font-family:var(--display);font-style:italic;font-weight:400;
+  font-size:clamp(1.5rem,5.8vw,2rem);line-height:1.2;letter-spacing:-.02em;
+  color:var(--pulse);max-width:19ch;
+}
+.quote cite{display:block;margin-top:14px;font-style:normal}
+
+/* ---- Métricas ---- */
+.readout{
+  border-top:1px solid var(--grid-bold);border-bottom:1px solid var(--grid-bold);
+  padding:40px 0;margin:0 0 16vh;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:34px 24px;
+}
+.metric.wide{grid-column:1/-1}
+.metric .num{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(2.8rem,11vw,4rem);
+  line-height:.9;letter-spacing:-.04em;color:var(--ink);
+}
+.metric .lbl{display:block;margin-top:14px}
+
+/* ---- Carta: la única hoja sin cuadrícula ---- */
+.letter{
+  background:var(--sheet);
+  padding:clamp(34px,8vw,58px);
+  margin:0 calc(var(--pad) * -.4) 16vh;
+  border-radius:6px;
+  box-shadow:0 30px 70px -34px rgba(80,45,55,.4),0 2px 6px -2px rgba(80,45,55,.08);
+}
+.letter h2{
+  font-family:var(--display);font-weight:400;font-style:italic;
+  font-size:clamp(2rem,7vw,2.8rem);letter-spacing:-.03em;line-height:1.08;
+  margin:18px 0 26px;
+}
+.letter p{margin-bottom:1.2em;font-size:1.03rem;line-height:1.75;color:#4A3D43;max-width:62ch}
+.letter .sign{
+  margin-top:34px;font-family:var(--display);font-style:italic;
+  font-size:1.4rem;color:var(--ink);
+}
+
+/* ---- Plan ---- */
+.plan{padding-bottom:14vh}
+.plan h2{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(2.2rem,8.4vw,3.2rem);
+  line-height:1.05;letter-spacing:-.03em;margin:10px 0 34px;
+}
+.card{
+  display:block;width:100%;text-align:left;
+  background:none;border:0;border-top:1px solid var(--grid-bold);
+  color:inherit;font:inherit;padding:22px 2px;cursor:pointer;
+}
+.card:last-child{border-bottom:1px solid var(--grid-bold)}
+.card .head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.card h3{
+  font-family:var(--display);font-weight:400;
+  font-size:1.5rem;line-height:1.2;letter-spacing:-.02em;
+}
+.card .body{
+  max-height:0;overflow:hidden;opacity:0;margin-top:0;
+  transition:max-height .6s cubic-bezier(.22,.9,.3,1),opacity .45s ease,margin .6s ease;
+}
+.card.open .body{max-height:280px;opacity:1;margin-top:14px}
+.card.open .tap{color:var(--pulse)}
+.card .body p{color:var(--ink-2);font-size:1rem;max-width:44ch}
+
+/* ---- Cierre ---- */
+.outro{
+  min-height:80vh;min-height:80svh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;gap:34px;
+  padding-bottom:calc(16vh + env(safe-area-inset-bottom));
+}
+.outro .dot{
+  width:10px;height:10px;border-radius:50%;background:var(--pulse);
+  animation:thump 1.15s ease-in-out infinite;
+}
+.outro p{
+  font-family:var(--display);font-style:italic;font-weight:400;
+  font-size:clamp(1.6rem,6.2vw,2.2rem);line-height:1.28;letter-spacing:-.025em;
+  max-width:20ch;
+}
+.song{margin:0 0 10vh}
+.song iframe{width:100%;border:0;border-radius:16px;display:block}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .node{opacity:1;transform:none}
+}
+</style>
+</head>
+<body class="locked">
+
+<button id="ignition" aria-label="Empezar">
+  <svg id="ig-svg" viewBox="0 0 420 96" aria-hidden="true">
+    <path id="ig-base"></path>
+    <path id="ig-live"></path>
+  </svg>
+  <span class="ignition-label">Toca para empezar</span>
+</button>
+
+<main id="doc" aria-hidden="true">
+
+  <section class="cover">
+    <span class="mono" id="c-eyebrow"></span>
+    <h1 id="c-title"></h1>
+    <p class="sub" id="c-sub"></p>
+    <div class="scroll-hint"><i></i><em class="mono">Desliza</em></div>
+  </section>
+
+  <section class="song" id="song" hidden></section>
+
+  <section class="timeline" id="timeline">
+    <svg class="ecg" id="ecg" aria-hidden="true">
+      <path class="base" id="ecg-base"></path>
+      <path class="live" id="ecg-live"></path>
+      <circle class="head" id="ecg-head" r="3.4"></circle>
+    </svg>
+  </section>
+
+  <section class="readout" id="readout"></section>
+  <section class="letter" id="letter"></section>
+
+  <section class="plan">
+    <span class="mono">Lo que sigue</span>
+    <h2 id="p-title"></h2>
+    <div id="plan-cards"></div>
+  </section>
+
+  <section class="outro">
+    <div class="dot"></div>
+    <p id="outro-text"></p>
+    <span class="mono" id="outro-sig"></span>
+  </section>
+
+</main>
+
+<script>
+/* ═══ EDITA SOLO ESTE BLOQUE ═══ */
+const CONFIG = {
+  ella:   "NOMBRE",
+  inicio: "2024-08-11",
+
+  portada: {
+    eyebrow: "Registro · 2024 — 2026",
+    titulo:  "Dos años",
+    titulo2: "contigo",
+    sub:     "Ábrelo despacio, no hay prisa."
+  },
+
+  momentos: [
+    {
+      fecha: "05.05.2024", lugar: "Colima",
+      titulo: "La única florería abierta",
+      texto: "Ninguna florería abre en domingo. Le marqué a todas. La única que contestó estaba abierta nada más porque tenía un pedido de alguien más ese día — y por eso hubo hortensias. Eso yo no lo llamo casualidad. Los nervios sí fueron míos: nunca en mi vida había estado tan nervioso.",
+      cita:    "¿Vamos a volver a salir?",
+      citaPie: "Lo preguntaste tú. Ahí supe que iba para largo.",
+      foto: "fotos/01.jpg"
+    }
+  ],
+
+  metricas: [
+    { num:"AUTO", lbl:"días exactos · faltan {faltan} para los 730", wide:true },
+    { num:"3", lbl:"ciudades" },
+    { num:"∞", lbl:"veces que te elijo" }
+  ],
+
+  cancion: "https://open.spotify.com/track/34gCuhDGsG4bRPIf9bb02f",  // Thinking Out Loud
+
+  carta: {
+    de: "Para NOMBRE",
+    titulo: "Los mejores dos años.",
+    parrafos: [
+      "Estos dos años han sido los mejores de mi vida. Así de simple, sin adornos.",
+
+      "Y no lo digo nada más por lo bonito. Hemos pasado cosas buenas y cosas malas, y si soy honesto, en las malas fue donde de verdad aprendí de qué estamos hechos los dos. Ahí es donde me doy cuenta de que eres la persona con la que quiero pasar mis días. Lo fácil lo aguanta cualquiera. Lo otro no.",
+
+      "Le doy gracias a Dios por habernos cruzado en el camino. Con toda la gente que hay, y todos los lugares donde pudimos no habernos encontrado nunca, nos tocó aquí. Sé quién nos puso enfrente el uno del otro, y se lo agradezco todos los días.",
+
+      "Gracias por estos dos años. Quiero muchos más, contigo."
+    ],
+    firma: "Diego"
+  },
+
+  plan: {
+    titulo: "El resto del día ya está resuelto",
+    pasos: [
+      { hora:"01", nombre:"PENDIENTE", detalle:"PENDIENTE" },
+      { hora:"02", nombre:"PENDIENTE", detalle:"PENDIENTE" },
+      { hora:"03", nombre:"PENDIENTE", detalle:"PENDIENTE" }
+    ]
+  },
+
+  cierre: {
+    texto: "Dos años no se sienten como dos años. Se sienten como el principio.",
+    firma: "Colima · Agosto 2026"
+  }
+};
+/* ═══ FIN ═══ */
+
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ---- Latido horizontal de la ignición ---- */
+(function(){
+  const y=48; let d=`M 0 ${y}`;
+  [95,210,325].forEach(X=>{
+    d+=` L ${X-26} ${y} L ${X-19} ${y-7} L ${X-12} ${y} L ${X-6} ${y+11}`
+     + ` L ${X} ${y-34} L ${X+6} ${y+17} L ${X+12} ${y} L ${X+21} ${y-9} L ${X+28} ${y}`;
+  });
+  d+=` L 420 ${y}`;
+  $('#ig-base').setAttribute('d',d);
+  const live=$('#ig-live'); live.setAttribute('d',d);
+  const L=live.getTotalLength();
+  live.style.setProperty('--len',L);
+  live.style.strokeDasharray=L;
+})();
+
+/* ---- Contenido ---- */
+$('#c-eyebrow').textContent=CONFIG.portada.eyebrow;
+$('#c-title').innerHTML=esc(CONFIG.portada.titulo)+'<em>'+esc(CONFIG.portada.titulo2)+'</em>';
+$('#c-sub').textContent=CONFIG.portada.sub;
+
+const tl=$('#timeline');
+CONFIG.momentos.forEach(m=>{
+  const el=document.createElement('article');
+  el.className='node';
+  el.innerHTML=`
+    <div class="stamp"><span class="mono">${esc(m.fecha)}</span><span class="mono">${esc(m.lugar)}</span></div>
+    <h2>${esc(m.titulo)}</h2>
+    <figure class="shot${m.foto?'':' empty'}">
+      <div class="frame"><img src="${esc(m.foto||'')}" alt="" loading="lazy" decoding="async"></div>
+      <figcaption class="mono cap">${esc(m.fecha)} — ${esc(m.lugar)}</figcaption>
+    </figure>
+    <p>${esc(m.texto)}</p>
+    ${m.cita?`<blockquote class="quote"><p>“${esc(m.cita)}”</p>${m.citaPie?`<cite class="mono">${esc(m.citaPie)}</cite>`:''}</blockquote>`:''}`;
+  el.querySelector('img').addEventListener('error',()=>el.querySelector('.shot').classList.add('empty'));
+  tl.appendChild(el);
+});
+
+const dias=Math.floor((Date.now()-new Date(CONFIG.inicio+'T00:00:00'))/864e5);
+const faltan=730-dias;
+$('#readout').innerHTML=CONFIG.metricas.map(m=>{
+  let lbl=esc(m.lbl);
+  if(lbl.includes('{faltan}')) lbl = faltan>0 ? lbl.replace('{faltan}',faltan) : 'días juntos';
+  return `<div class="metric${m.wide?' wide':''}">
+    <span class="num">${m.num==='AUTO'?dias.toLocaleString('es-MX'):esc(m.num)}</span>
+    <span class="mono lbl">${lbl}</span></div>`;
+}).join('');
+
+if(CONFIG.cancion){
+  const id=(CONFIG.cancion.match(/track\/([A-Za-z0-9]+)/)||[])[1];
+  if(id){ $('#song').hidden=false;
+    $('#song').innerHTML=`<span class="mono" style="display:block;margin-bottom:16px">Ponle play antes de seguir</span>
+      <iframe height="152" loading="lazy" allow="encrypted-media" src="https://open.spotify.com/embed/track/${id}"></iframe>`; }
+}
+
+$('#letter').innerHTML=`<span class="mono">${esc(CONFIG.carta.de)}</span>
+  <h2>${esc(CONFIG.carta.titulo)}</h2>
+  ${CONFIG.carta.parrafos.map(p=>`<p>${esc(p)}</p>`).join('')}
+  <div class="sign">— ${esc(CONFIG.carta.firma)}</div>`;
+
+const hayPlan = CONFIG.plan.pasos.some(p => p.nombre && p.nombre !== 'PENDIENTE');
+if (!hayPlan) document.querySelector('.plan').hidden = true;
+$('#p-title').textContent=CONFIG.plan.titulo;
+$('#plan-cards').innerHTML=CONFIG.plan.pasos.map(p=>`
+  <button class="card" aria-expanded="false">
+    <span class="head">
+      <span><span class="mono" style="display:block;margin-bottom:9px">${esc(p.hora)}</span><h3>${esc(p.nombre)}</h3></span>
+      <span class="mono tap">abrir</span>
+    </span>
+    <span class="body"><p>${esc(p.detalle)}</p></span>
+  </button>`).join('');
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
+  const open=c.classList.toggle('open');
+  c.setAttribute('aria-expanded',open);
+  c.querySelector('.tap').textContent=open?'cerrar':'abrir';
+}));
+
+$('#outro-text').textContent=CONFIG.cierre.texto;
+$('#outro-sig').textContent=CONFIG.cierre.firma;
+
+/* ---- Ignición ---- */
+const ign=$('#ignition'),doc=$('#doc');
+ign.addEventListener('click',()=>{
+  ign.classList.add('off'); doc.classList.add('on');
+  doc.setAttribute('aria-hidden','false');
+  document.body.classList.remove('locked');
+  setTimeout(()=>{ign.remove();build();},1700);
+});
+
+/* ---- El estilete que baja escribiendo ---- */
+const nodes=[...document.querySelectorAll('.node')];
+const ecg=$('#ecg'),base=$('#ecg-base'),live=$('#ecg-live'),head=$('#ecg-head');
+const X=20,CENTRO=14.5;
+let samples=[],totalLen=0,H=0;
+
+const obs=new IntersectionObserver((es,o)=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('seen');o.unobserve(e.target);}
+}),{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+nodes.forEach(n=>obs.observe(n));
+
+function build(){
+  H=tl.offsetHeight; if(!H) return;
+  let d=`M ${X} 0`;
+  nodes.map(n=>n.offsetTop+CENTRO).sort((a,b)=>a-b).forEach(Y=>{
+    d+=` L ${X} ${(Y-15).toFixed(1)} L 25 ${(Y-11).toFixed(1)} L ${X} ${(Y-7).toFixed(1)}`
+     + ` L 13 ${(Y-3).toFixed(1)} L 35 ${(Y+2).toFixed(1)} L 8 ${(Y+7).toFixed(1)}`
+     + ` L ${X} ${(Y+11).toFixed(1)} L 25 ${(Y+16).toFixed(1)} L ${X} ${(Y+20).toFixed(1)}`;
+  });
+  d+=` L ${X} ${H}`;
+  base.setAttribute('d',d); live.setAttribute('d',d);
+  ecg.setAttribute('height',H); ecg.setAttribute('viewBox',`0 0 40 ${H}`);
+  totalLen=live.getTotalLength(); samples=[];
+  for(let i=0;i<=260;i++){const l=totalLen*i/260;samples.push([l,live.getPointAtLength(l).y]);}
+  live.style.strokeDasharray=totalLen; live.style.strokeDashoffset=totalLen;
+  tick();
+}
+function lenAtY(y){
+  if(!samples.length||y<=samples[0][1]) return 0;
+  for(let i=1;i<samples.length;i++){
+    if(samples[i][1]>=y){
+      const [la,ya]=samples[i-1],[lb,yb]=samples[i];
+      return la+(lb-la)*((y-ya)/((yb-ya)||1));
+    }
+  }
+  return totalLen;
+}
+let raf=null;
+function tick(){
+  if(raf||!totalLen) return;
+  raf=requestAnimationFrame(()=>{
+    raf=null;
+    const box=tl.getBoundingClientRect();
+    const y=Math.max(0,Math.min(H,window.innerHeight*.62-box.top));
+    const l=lenAtY(y);
+    live.style.strokeDashoffset=totalLen-l;
+    const p=live.getPointAtLength(l);
+    head.setAttribute('cx',p.x); head.setAttribute('cy',p.y);
+    ecg.classList.toggle('armed',l>3&&l<totalLen-3);
+    nodes.forEach(n=>n.classList.toggle('lit',n.offsetTop+CENTRO<=y+4));
+  });
+}
+window.addEventListener('scroll',tick,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(build,250));
+if(window.visualViewport) window.visualViewport.addEventListener('resize',tick);
+if(window.ResizeObserver) new ResizeObserver(build).observe(tl);
+else window.addEventListener('resize',build);
+window.addEventListener('load',build);
+document.fonts && document.fonts.ready.then(build);
+build();
+</script>
+</body>
+</html>
